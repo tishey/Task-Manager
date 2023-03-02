@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/src/util/color.dart';
-import 'package:task_manager/src/util/text)style.dart';
+import 'package:task_manager/src/util/text_style.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController textController;
@@ -9,7 +9,7 @@ class CustomTextField extends StatelessWidget {
   final Function(String)? onChanged;
   final TextAlign? textAlign;
   final VoidCallback? onTap;
-  CustomTextField({
+  const CustomTextField({super.key, 
     required this.hintText,
     required this.textController,
     this.onChanged,

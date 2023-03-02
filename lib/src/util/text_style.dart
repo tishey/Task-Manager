@@ -5,7 +5,7 @@ class TextTypography{
     TextTypography._();
 
     static TextStyle customTextStyle(BuildContext context){
-      return TextStyle(
+      return const TextStyle(
         fontFamily: 'Geometria',
         fontSize: 16
 
