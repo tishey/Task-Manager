@@ -1,9 +1,9 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:task_manager/provider_locator.dart';
 import 'package:task_manager/src/presentation/widget/custom_textfield.dart';
-import 'package:task_manager/src/provider/task_model.dart';
 import 'package:task_manager/src/util/color.dart';
 import 'package:task_manager/src/util/text)style.dart';
 
@@ -12,26 +12,9 @@ class TaskManager extends ConsumerWidget {
 
   final TextEditingController taskController = TextEditingController();
 
-  // bool isCheck = false;
-
-  // checkToggle() {
-  //   setState(() {
-  //     isCheck = !isCheck;
-  //   });
-  // }
-
-  // List<TaskModel> tasks = [];
-
-  // void addTask(String name){
-  //  setState(() {
-  //    tasks.add(TaskModel(title: name));
-  //  });
-  // }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    //  final taskList = TaskModel(isCheck: false, title: taskController.text);
-    final taskListProvider = ref.watch(taskProvider.notifier);
+    final taskListProvider = ref.watch(taskProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -44,7 +27,7 @@ class TaskManager extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: ListView.builder(
               physics: const BouncingScrollPhysics(),
-              itemCount: taskListProvider.task.length,
+              itemCount: taskListProvider.length,
               itemBuilder: (context, index) {
                 return Container(
                   decoration: BoxDecoration(
@@ -59,7 +42,7 @@ class TaskManager extends ConsumerWidget {
                   child: ListTile(
                     leading: GestureDetector(
                       onTap: () {
-                        ref.watch(taskProvider.notifier).checkToggle();
+                        ref.read(taskProvider.notifier).checkToggle(taskListProvider[index], index);
                       },
                       child: AnimatedContainer(
                         margin: const EdgeInsets.symmetric(vertical: 5),
@@ -69,28 +52,36 @@ class TaskManager extends ConsumerWidget {
                         duration: const Duration(milliseconds: 500),
                         decoration: BoxDecoration(
                             border: Border.all(
-                                color: taskListProvider.toggleButton
+                                color: taskListProvider[index].isCheck
                                     ? Colors.transparent
                                     : Colors.grey),
-                            color: taskListProvider.toggleButton
+                            color: taskListProvider[index].isCheck
                                 ? CustomColor.greenColor
                                 : Colors.transparent,
                             borderRadius: BorderRadius.circular(50)),
                         child: Icon(
                           Icons.check,
-                          color: taskListProvider.toggleButton
+                          color: taskListProvider[index].isCheck
                               ? CustomColor.whiteColor
                               : Colors.transparent,
                           size: 15,
                         ),
                       ),
                     ),
-                    title: Text(
-                      taskListProvider.task[index].title,
-                      style: TextTypography.customTextStyle(context).copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: CustomColor.whiteColor),
+                      title: Text(
+                      taskListProvider[index].title,
+                      style:  TextTypography.customTextStyle(context).copyWith(
+                        decoration: taskListProvider[index].isCheck ? TextDecoration.lineThrough : null,
+                        fontWeight: FontWeight.bold,
+                        color: taskListProvider[index].isCheck ? CustomColor.greyColor : CustomColor.whiteColor),
                     ),
+                    trailing: IconButton(
+                      splashRadius: 1,
+                      onPressed: (){
+                     if(taskListProvider.isNotEmpty && index < taskListProvider.length){
+                       ref.read(taskProvider.notifier).deleteTask(taskListProvider[index], );
+                     }
+                    }, icon: Icon(Icons.delete, color: CustomColor.redColor,)),
                   ),
                 );
               })),
@@ -108,8 +99,10 @@ class TaskManager extends ConsumerWidget {
               width: MediaQuery.of(context).size.width / 20,
             ),
             GestureDetector(
-              onTap: () =>
-                  ref.watch(taskProvider.notifier).addTask(taskController.text),
+              onTap: () {
+                 ref.read(taskProvider.notifier).addTask(taskController.text);
+                  taskController.text = '';
+              },
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
