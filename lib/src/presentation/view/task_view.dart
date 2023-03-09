@@ -79,9 +79,9 @@ class TaskManager extends ConsumerWidget {
                       splashRadius: 1,
                       onPressed: (){
                      if(taskListProvider.isNotEmpty && index < taskListProvider.length){
-                       ref.read(taskProvider.notifier).deleteTask(taskListProvider[index], );
+                     ref.read(taskProvider.notifier).deleteTask(taskListProvider[index], );
                      }
-                    }, icon: Icon(Icons.delete, color: CustomColor.redColor,)),
+                    },icon: Icon(Icons.delete, color: CustomColor.redColor,)),
                   ),
                 );
               })),

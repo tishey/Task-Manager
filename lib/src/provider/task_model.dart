@@ -23,8 +23,9 @@ class TaskNotiferModel extends StateNotifier<List<TaskModel>> {
   }
 
   deleteTask(TaskModel task){
-   var delete = state.toList();
-   
-   delete.remove(task);
+  //  var delete = state.toList();
+  //  delete.where((e) => e  != task);
+  
+   state = state.where((e) => e != task).toList();
   }
 }
